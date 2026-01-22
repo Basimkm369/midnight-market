@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import Dropdown from "@/components/listing/Dropdown";
 import type { DropdownOption, SortOption } from "@/lib/productListing";

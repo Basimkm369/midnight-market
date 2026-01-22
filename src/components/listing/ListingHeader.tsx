@@ -1,3 +1,5 @@
+"use client";
+
 type ListingHeaderProps = {
   title: string;
   subtitle: string;

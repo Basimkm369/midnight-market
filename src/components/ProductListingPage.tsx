@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
-} from "@tanstack/react-query";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import ProductCard from "@/components/ProductCard";
-import type { Product } from "@/types/product";
-import type { AddFormValues, EditFormValues } from "@/types/forms";
-import ListingHeader from "@/components/listing/ListingHeader";
-import FilterBar from "@/components/listing/FilterBar";
-import ProductFormModal from "@/components/listing/ProductFormModal";
-import DeleteConfirmModal from "@/components/listing/DeleteConfirmModal";
+} from '@tanstack/react-query';
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import ProductCard from '@/components/ProductCard';
+import type { Product } from '@/types/product';
+import type { AddFormValues, EditFormValues } from '@/types/forms';
+import ListingHeader from '@/components/listing/ListingHeader';
+import FilterBar from '@/components/listing/FilterBar';
+import ProductFormModal from '@/components/listing/ProductFormModal';
+import DeleteConfirmModal from '@/components/listing/DeleteConfirmModal';
 import {
   mapSort,
   useDebouncedValue,
   type DropdownOption,
   type SortOption,
   type SortQuery,
-} from "@/lib/productListing";
+} from '@/lib/productListing';
 
 const PAGE_SIZE = 12;
 
@@ -42,8 +42,6 @@ type ProductsResponse = {
 
 type Category = string;
 
-// moved helpers to src/lib/productListing.ts
-
 async function fetchProducts({
   pageParam,
   search,
@@ -56,40 +54,38 @@ async function fetchProducts({
   category: string;
 }): Promise<ProductsResponse> {
   const selectFields = [
-    "title",
-    "price",
-    "thumbnail",
-    "brand",
-    "category",
-    "rating",
-    "description",
-  ].join(",");
+    'title',
+    'price',
+    'thumbnail',
+    'brand',
+    'category',
+    'rating',
+    'description',
+  ].join(',');
   const url = new URL(
     category
       ? `https://dummyjson.com/products/category/${category}`
       : search
-        ? "https://dummyjson.com/products/search"
-        : "https://dummyjson.com/products",
+        ? 'https://dummyjson.com/products/search'
+        : 'https://dummyjson.com/products',
   );
-  url.searchParams.set("limit", String(PAGE_SIZE));
-  url.searchParams.set("skip", String(pageParam));
-  url.searchParams.set("select", selectFields);
-  url.searchParams.set("sortBy", sort.sortBy);
-  url.searchParams.set("order", sort.order);
+  url.searchParams.set('limit', String(PAGE_SIZE));
+  url.searchParams.set('skip', String(pageParam));
+  url.searchParams.set('select', selectFields);
+  url.searchParams.set('sortBy', sort.sortBy);
+  url.searchParams.set('order', sort.order);
   if (search && !category) {
-    url.searchParams.set("q", search);
+    url.searchParams.set('q', search);
   }
 
   const response = await axios.get<ProductsResponse>(url.toString());
   return response.data;
 }
 
-// moved Dropdown to src/components/listing/Dropdown.tsx
-
 export default function ProductListingPage() {
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("price-asc");
-  const [category, setCategory] = useState("");
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<SortOption>('price-asc');
+  const [category, setCategory] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
@@ -107,10 +103,10 @@ export default function ProductListingPage() {
     isLoading: isCategoriesLoading,
     isError: isCategoriesError,
   } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ['categories'],
     queryFn: async () => {
       const response = await axios.get<Category[]>(
-        "https://dummyjson.com/products/category-list",
+        'https://dummyjson.com/products/category-list',
       );
       return response.data;
     },
@@ -120,34 +116,32 @@ export default function ProductListingPage() {
   const categoryList = useMemo(() => {
     if (!Array.isArray(categories)) return [];
     return categories.map((item) => {
-      if (typeof item === "string") return item;
-      if (item && typeof item === "object") {
+      if (typeof item === 'string') return item;
+      if (item && typeof item === 'object') {
         const asRecord = item as Record<string, unknown>;
         const slug = asRecord.slug;
-        if (typeof slug === "string") return slug;
+        if (typeof slug === 'string') return slug;
         const name = asRecord.name;
-        if (typeof name === "string") return name;
+        if (typeof name === 'string') return name;
       }
       return String(item);
     });
   }, [categories]);
 
   const sortOptions: DropdownOption[] = [
-    { value: "price-asc", label: "Price: low to high" },
-    { value: "price-desc", label: "Price: high to low" },
-    { value: "name-asc", label: "Name: A to Z" },
-    { value: "name-desc", label: "Name: Z to A" },
+    { value: 'price-asc', label: 'Price: low to high' },
+    { value: 'price-desc', label: 'Price: high to low' },
+    { value: 'name-asc', label: 'Name: A to Z' },
+    { value: 'name-desc', label: 'Name: Z to A' },
   ];
 
   const categoryOptions: DropdownOption[] = useMemo(
     () => [
-      { value: "", label: "All categories" },
+      { value: '', label: 'All categories' },
       ...categoryList.map((item) => ({ value: item, label: item })),
     ],
     [categoryList],
   );
-
-  // moved formatCategoryLabel to src/lib/productListing.ts
 
   const {
     data,
@@ -160,7 +154,7 @@ export default function ProductListingPage() {
     refetch,
   } = useInfiniteQuery({
     queryKey: [
-      "products",
+      'products',
       debouncedSearch,
       sortQuery.sortBy,
       sortQuery.order,
@@ -184,13 +178,13 @@ export default function ProductListingPage() {
     () =>
       yup
         .mixed<FileList>()
-        .test("fileSize", "Image must be less than 10MB", (value) => {
+        .test('fileSize', 'Image must be less than 10MB', (value) => {
           if (!value || value.length === 0) return true;
           return value[0].size <= 10 * 1024 * 1024;
         })
-        .test("fileType", "Only image files are allowed", (value) => {
+        .test('fileType', 'Only image files are allowed', (value) => {
           if (!value || value.length === 0) return true;
-          return value[0].type.startsWith("image/");
+          return value[0].type.startsWith('image/');
         }),
     [],
   );
@@ -198,21 +192,21 @@ export default function ProductListingPage() {
   const addSchema = useMemo(
     () =>
       yup.object({
-        title: yup.string().trim().required("Title is required"),
+        title: yup.string().trim().required('Title is required'),
         price: yup
           .number()
-          .typeError("Price must be a number")
-          .positive("Price must be greater than 0")
-          .required("Price is required"),
-        category: yup.string().trim().required("Category is required"),
-        description: yup.string().trim().required("Description is required"),
+          .typeError('Price must be a number')
+          .positive('Price must be greater than 0')
+          .required('Price is required'),
+        category: yup.string().trim().required('Category is required'),
+        description: yup.string().trim().required('Description is required'),
         rating: yup
           .number()
-          .typeError("Rating must be a number")
-          .min(0, "Rating must be between 0 and 5")
-          .max(5, "Rating must be between 0 and 5")
-          .required("Rating is required"),
-        image: imageSchema.required("Image is required"),
+          .typeError('Rating must be a number')
+          .min(0, 'Rating must be between 0 and 5')
+          .max(5, 'Rating must be between 0 and 5')
+          .required('Rating is required'),
+        image: imageSchema.required('Image is required'),
       }),
     [imageSchema],
   );
@@ -220,19 +214,19 @@ export default function ProductListingPage() {
   const editSchema = useMemo(
     () =>
       yup.object({
-        title: yup.string().trim().required("Title is required"),
+        title: yup.string().trim().required('Title is required'),
         price: yup
           .number()
-          .typeError("Price must be a number")
-          .positive("Price must be greater than 0")
-          .required("Price is required"),
+          .typeError('Price must be a number')
+          .positive('Price must be greater than 0')
+          .required('Price is required'),
         category: yup.string().trim().optional(),
         description: yup.string().trim().optional(),
         rating: yup
           .number()
-          .typeError("Rating must be a number")
-          .min(0, "Rating must be between 0 and 5")
-          .max(5, "Rating must be between 0 and 5")
+          .typeError('Rating must be a number')
+          .min(0, 'Rating must be between 0 and 5')
+          .max(5, 'Rating must be between 0 and 5')
           .optional(),
         image: imageSchema.optional(),
       }),
@@ -242,10 +236,10 @@ export default function ProductListingPage() {
   const addForm = useForm<AddFormValues>({
     resolver: yupResolver(addSchema),
     defaultValues: {
-      title: "",
+      title: '',
       price: 0,
-      category: "",
-      description: "",
+      category: '',
+      description: '',
       rating: undefined,
     },
   });
@@ -253,16 +247,16 @@ export default function ProductListingPage() {
   const editForm = useForm<EditFormValues>({
     resolver: yupResolver(editSchema),
     defaultValues: {
-      title: "",
+      title: '',
       price: 0,
-      category: "",
-      description: "",
+      category: '',
+      description: '',
       rating: undefined,
     },
   });
 
-  const addImageFiles = addForm.watch("image");
-  const editImageFiles = editForm.watch("image");
+  const addImageFiles = addForm.watch('image');
+  const editImageFiles = editForm.watch('image');
 
   useEffect(() => {
     if (!addImageFiles || addImageFiles.length === 0) {
@@ -290,17 +284,17 @@ export default function ProductListingPage() {
       preview?: string | null;
     }) => {
       const fallbackProduct = {
-        description: payload.data.description ?? "Newly added product",
+        description: payload.data.description ?? 'Newly added product',
         thumbnail:
           payload.preview ??
-          "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+          'https://i.dummyjson.com/data/products/1/thumbnail.jpg',
         rating: payload.data.rating ?? 4.2,
-        brand: "Custom",
-        category: payload.data.category || category || "misc",
+        brand: 'Custom',
+        category: payload.data.category || category || 'misc',
         price: payload.data.price ?? 0,
       };
       const response = await axios.post<Product>(
-        "https://dummyjson.com/products/add",
+        'https://dummyjson.com/products/add',
         {
           title: payload.data.title,
           price: payload.data.price,
@@ -321,8 +315,18 @@ export default function ProductListingPage() {
     },
     onSuccess: (created) => {
       queryClient.setQueryData(
-        ["products", debouncedSearch, sortQuery.sortBy, sortQuery.order, category],
-        (oldData: { pages: ProductsResponse[]; pageParams: number[] } | undefined) => {
+        [
+          'products',
+          debouncedSearch,
+          sortQuery.sortBy,
+          sortQuery.order,
+          category,
+        ],
+        (
+          oldData:
+            | { pages: ProductsResponse[]; pageParams: number[] }
+            | undefined,
+        ) => {
           if (!oldData?.pages?.length) return oldData;
           const [first, ...rest] = oldData.pages;
           const updatedFirst = {
@@ -362,8 +366,18 @@ export default function ProductListingPage() {
     },
     onSuccess: (updated) => {
       queryClient.setQueryData(
-        ["products", debouncedSearch, sortQuery.sortBy, sortQuery.order, category],
-        (oldData: { pages: ProductsResponse[]; pageParams: number[] } | undefined) => {
+        [
+          'products',
+          debouncedSearch,
+          sortQuery.sortBy,
+          sortQuery.order,
+          category,
+        ],
+        (
+          oldData:
+            | { pages: ProductsResponse[]; pageParams: number[] }
+            | undefined,
+        ) => {
           if (!oldData?.pages?.length) return oldData;
           const updatedPages = oldData.pages.map((page) => ({
             ...page,
@@ -375,7 +389,7 @@ export default function ProductListingPage() {
         },
       );
       queryClient.setQueryData(
-        ["product", String(updated.id)],
+        ['product', String(updated.id)],
         (old: Product | undefined) => (old ? { ...old, ...updated } : old),
       );
       editForm.reset();
@@ -393,20 +407,35 @@ export default function ProductListingPage() {
     },
     onSuccess: (deleted) => {
       queryClient.setQueryData(
-        ["products", debouncedSearch, sortQuery.sortBy, sortQuery.order, category],
-        (oldData: { pages: ProductsResponse[]; pageParams: number[] } | undefined) => {
+        [
+          'products',
+          debouncedSearch,
+          sortQuery.sortBy,
+          sortQuery.order,
+          category,
+        ],
+        (
+          oldData:
+            | { pages: ProductsResponse[]; pageParams: number[] }
+            | undefined,
+        ) => {
           if (!oldData?.pages?.length) return oldData;
           const updatedPages = oldData.pages.map((page) => ({
             ...page,
-            products: page.products.filter((product) => product.id !== deleted.id),
+            products: page.products.filter(
+              (product) => product.id !== deleted.id,
+            ),
           }));
           return { ...oldData, pages: updatedPages };
         },
       );
-      queryClient.setQueryData(["product", String(deleted.id)], (old: Product | undefined) => {
-        if (!old) return old;
-        return { ...old, ...(deleted as Product) };
-      });
+      queryClient.setQueryData(
+        ['product', String(deleted.id)],
+        (old: Product | undefined) => {
+          if (!old) return old;
+          return { ...old, ...(deleted as Product) };
+        },
+      );
     },
   });
 
@@ -416,18 +445,14 @@ export default function ProductListingPage() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
           fetchNextPage();
         }
         if (entries[0].isIntersecting && !hasNextPage && products.length > 0) {
           setReachedEnd(true);
         }
       },
-      { rootMargin: "400px" },
+      { rootMargin: '400px' },
     );
 
     observer.observe(node);
@@ -478,7 +503,7 @@ export default function ProductListingPage() {
         <FilterBar
           search={search}
           onSearchChange={setSearch}
-          onClearSearch={() => setSearch("")}
+          onClearSearch={() => setSearch('')}
           category={category}
           categoryOptions={categoryOptions}
           categoryList={categoryList}
@@ -493,7 +518,7 @@ export default function ProductListingPage() {
           <div className="rounded-3xl border border-rose-400/30 bg-rose-500/10 p-8 text-rose-100 shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
             <h2 className="text-lg font-semibold">Unable to load products</h2>
             <p className="mt-2 text-sm text-rose-100/80">
-              {(error as Error)?.message ?? "Something went wrong."}
+              {(error as Error)?.message ?? 'Something went wrong.'}
             </p>
             <button
               type="button"
@@ -614,7 +639,7 @@ export default function ProductListingPage() {
         }}
         onClearEditImage={() => {
           setEditPreview(null);
-          editForm.setValue("image", undefined);
+          editForm.setValue('image', undefined);
         }}
         isAddPending={addProductMutation.isPending}
         isEditPending={updateProductMutation.isPending}
@@ -633,4 +658,3 @@ export default function ProductListingPage() {
     </div>
   );
 }
-

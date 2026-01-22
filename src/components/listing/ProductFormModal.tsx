@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import type { UseFormReturn } from "react-hook-form";
 import type { AddFormValues, EditFormValues } from "@/types/forms";
