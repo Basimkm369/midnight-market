@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0b0d;
+  --foreground: #f4f1e9;
 }
 
 @theme inline {
@@ -12,15 +12,83 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: #0b0b0d;
+  color: #f4f1e9;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+html {
+  background: #0b0b0d;
+  color: #f4f1e9;
+}
+
+.dropdown-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #6f6f74 #111115;
+}
+
+.dropdown-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-track {
+  background: #111115;
+  border-radius: 999px;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: #6f6f74;
+  border-radius: 999px;
+  border: 2px solid #111115;
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: #8a8a91;
+}
+
+.modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #6f6f74 #0f0f13;
+}
+
+.modal-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal-scroll::-webkit-scrollbar-track {
+  background: #0f0f13;
+  border-radius: 999px;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: #6f6f74;
+  border-radius: 999px;
+  border: 2px solid #0f0f13;
+}
+
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #8a8a91;
+}
+
+.chip-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #6f6f74 transparent;
+}
+
+.chip-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.chip-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chip-scroll::-webkit-scrollbar-thumb {
+  background: #6f6f74;
+  border-radius: 999px;
+}
+
+.chip-scroll::-webkit-scrollbar-thumb:hover {
+  background: #8a8a91;
 }
