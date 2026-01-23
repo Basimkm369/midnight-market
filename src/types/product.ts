@@ -1,4 +1,6 @@
 export type Product = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  images: any;
   id: number;
   title: string;
   price: number;
@@ -7,6 +9,5 @@ export type Product = {
   category: string;
   rating: number;
   description: string;
-  images?: string[];
   isLocal?: boolean;
 };
