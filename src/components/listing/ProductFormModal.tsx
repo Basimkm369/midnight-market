@@ -8,8 +8,8 @@ import type { Product } from "@/types/product";
 type ProductFormModalProps = {
   isOpen: boolean;
   editingProduct: Product | null;
-  addForm: UseFormReturn<AddFormValues>;
-  editForm: UseFormReturn<EditFormValues>;
+  addForm: UseFormReturn<AddFormValues, unknown, AddFormValues>;
+  editForm: UseFormReturn<EditFormValues, unknown, EditFormValues>;
   addPreview: string | null;
   editPreview: string | null;
   onClose: () => void;

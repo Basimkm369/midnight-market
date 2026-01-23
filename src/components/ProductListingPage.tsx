@@ -206,7 +206,7 @@ export default function ProductListingPage() {
           .min(0, 'Rating must be between 0 and 5')
           .max(5, 'Rating must be between 0 and 5')
           .required('Rating is required'),
-        image: imageSchema.required('Image is required'),
+        image: imageSchema.optional(),
       }),
     [imageSchema],
   );
@@ -233,25 +233,31 @@ export default function ProductListingPage() {
     [imageSchema],
   );
 
-  const addForm = useForm<AddFormValues>({
-    resolver: yupResolver(addSchema),
+  const addForm = useForm<AddFormValues, unknown, AddFormValues>({
+    resolver: yupResolver<AddFormValues, unknown, AddFormValues>(
+      addSchema as yup.ObjectSchema<AddFormValues>,
+    ),
     defaultValues: {
       title: '',
       price: 0,
       category: '',
       description: '',
-      rating: undefined,
+      rating: 0,
+      image: undefined,
     },
   });
 
-  const editForm = useForm<EditFormValues>({
-    resolver: yupResolver(editSchema),
+  const editForm = useForm<EditFormValues, unknown, EditFormValues>({
+    resolver: yupResolver<EditFormValues, unknown, EditFormValues>(
+      editSchema as yup.ObjectSchema<EditFormValues>,
+    ),
     defaultValues: {
       title: '',
       price: 0,
       category: '',
       description: '',
       rating: undefined,
+      image: undefined,
     },
   });
 

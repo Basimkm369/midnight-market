@@ -7,5 +7,6 @@ export type Product = {
   category: string;
   rating: number;
   description: string;
+  images?: string[];
   isLocal?: boolean;
 };
